@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="PC All Test Suite"  parallel="tests" thread-count="1" >
+
+    <parameter name="user" value="12300000027"/>
+    <parameter name="pwd" value="1qaz2wsx"/>
+
+    <parameter name="browseNumber" value="1"/>
+
+    <!-- prod表示生产环境，uat表示测试环境-->
+    <parameter name="environment" value="prod"/>
+
+
+    <test name="现金流量项">
+        <classes>
+            <class name="com.yff.test.test.business.cost.CashFlowItemTest"/>
+        </classes>
+    </test>
+
+
+    <listeners>
+        <listener class-name="com.yff.listener.TestLogListener"/>
+        <listener class-name="com.yff.listener.TestReportListener"/>
+    </listeners>
+</suite>

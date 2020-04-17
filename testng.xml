@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<!--
+    设置suite测试套件的名称
+    parallel=tests代表tests级别的并行，默认为none，即为串行
+    thread-count代表并行的数量
+ -->
+<suite name="All Suite"  parallel="tests" thread-count="1" >
+
+    <!--
+        配置参数：
+            部分确定的参数可以写死，例如Jenkins对应服务器IP、运行的浏览器node节点的版本号
+            还有部分参数就是外部传参，运行的环境，
+        参考链接：
+            Jenkins->Maven->Testng->执行类 这样参数依次传递
+                https://www.cnblogs.com/lincj/p/5900019.html
+
+            Maven执行用例：maven-surefire-plugin插件(具体看pom.xml中该插件相关的配置)
+                (1)插件基础知识
+                    https://www.cnblogs.com/lgqboke/p/9957526.html
+                (2)Maven传递参数到Testng(systemPropertyVariables标签)
+                    https://www.cnblogs.com/wade-xu/p/4857471.html
+
+    -->
+    <parameter name="browserVersion" value="79.0.3945.79"/>
+    <parameter name="remoteIP" value="XX.XXX.XXX.XXX"/>
+    <parameter name="environment" value="${environment}"/>
+
+    <!--suite-files标签，将Test分在多个suite中-->
+    <suite-files>
+        <suite-file path="zhangxiong_testng.xml"/>
+        <suite-file path="yangfanfan_testng.xml"/>
+    </suite-files>
+
+    <!--运行过程中使用监听器 分别是日志和报告-->
+    <listeners>
+        <listener class-name="com.yff.listener.TestLogListener"/>
+        <listener class-name="com.yff.listener.TestReportListener"/>
+    </listeners>
+</suite>

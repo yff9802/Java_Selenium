@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="YFF" parallel="tests" thread-count="1">
+    <!--在xml中这里设置user和pwd之后，在下面的test里面如果参数和这里设置的一样
+    就不用在test里面设置对应的user和pwd-->
+    <parameter name="user" value="12300000023"/>
+    <parameter name="pwd" value="1qaz2wsx"/>
+
+    <!--产品服务器ip及浏览器版本 可写可不写，由于想要单独跑自己的xml，所以填写-->
+    <!--<parameter name="browserVersion" value="79.0.3945.79"/>
+    <parameter name="remoteIP" value="XX.XXX.XXX.XXX"/>-->
+
+    <!-- 1代表谷歌浏览器 4代表IE浏览器  后续将之变为可变参数(参考环境的参数)-->
+    <parameter name="browseNumber" value="1"/>
+
+    <!-- uat 代表测试环境  prod 代表生产环境 -->
+    <!--提交到Git仓库中应该的数据-->
+    <!--<parameter name="environment" value="${environment}"/>-->
+    <!--本地自己跑的时候需要的配置 根据需求-->
+    <parameter name="environment" value="prod"/>
+
+    <parameter name="language" value="zh_CN"/>
+
+    <!--如果运行的是Test类中的所有测试方法，就不用使用method标签来指定对应的方法-->
+    <test name="现金事务分类">
+        <classes>
+            <class name="com.yff.test.test.business.cost.CashAffairClassTest"/>
+        </classes>
+    </test>
+
+
+
+    <listeners>
+        <listener class-name="com.yff.listener.TestLogListener"/>
+        <listener class-name="com.yff.listener.TestReportListener"/>
+    </listeners>
+
+</suite>

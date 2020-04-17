@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    参考链接：
+    （1）Log4j2日志输出实例
+        https://www.cnblogs.com/songxingzhu/p/8867817.html
+    （2）Log4j2日志参数详解
+        https://www.cnblogs.com/frankwin608/p/log4j2.html
+        https://blog.csdn.net/fanpeng1100/article/details/53519192
+    （3）Console和RoutingAppender
+        http://logging.apache.org/log4j/2.x/manual/appenders.html#ConsoleAppender
+        http://logging.apache.org/log4j/2.x/manual/appenders.html#RoutingAppender
+    （4）RollingFile文件滚动更新机制
+        https://www.cnblogs.com/yeyang/p/7944899.html
+-->
+
+<!--
+    日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL
+    status="WARN" :用于设置log4j2自身内部日志的信息输出级别，默认是OFF
+    monitorInterval="30"  :间隔秒数,自动检测配置文件的变更和重新配置本身
+-->
+<Configuration status="WARN" monitorInterval="30">
+    <!--
+        1.自定义常量
+     -->
+    <Properties>
+        <!-- 配置参数日志目录前缀 -->
+        <Property name="LOG_HOME">logs</Property>
+        <!--配置日志输出格式 %t:线程名;%C:类名;%M:方法名;%m:错误信息;%n:换行 -->
+        <property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t-%L] %-5level %C.%M - %m%n</property>
+    </Properties>
+
+    <!--
+        2.Appender可以理解为日志的输出目的地
+    -->
+    <Appenders>
+        <!--2.1 console :控制台输出的配置-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- 控制台只输出level及以上级别的信息(onMatch),其他的直接拒绝(onMismatch) -->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!--日志格式是Property定义的-->
+            <PatternLayout pattern="${PATTERN}"/>
+        </Console>
+
+        <!--2.2 RollingFile :输出到文件的配置-->
+        <RollingFile name="RollingFile" fileName="${LOG_HOME}/demo.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/%d{yyyy-MM-dd}-demo-%i.log">
+            <!--输出debug及以上级别的信息-->
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${PATTERN}" charset="UTF-8"/>
+            <!--滚定的策略-->
+            <Policies>
+                <!-- 基于时间的滚动策略，interval属性用来指定多久滚动一次，默认是1 hour。 modulate=true用来调整时间：比如现在是早上3am，interval是4，那么第一次滚动是在4am，接着是8am，12am...而不是7am. -->
+                <!-- 关键点在于 filePattern后的日期格式，以及TimeBasedTriggeringPolicy的interval，
+                日期格式精确到哪一位，interval也精确到哪一个单位 -->
+                <!-- log4j2的按天分日志文件 : %d{yyyy-MM-dd}-%i.log-->
+                <!-- log4j2的按小时分日志文件 : %d{yyyy-MM-dd HH}-%i.log-->
+                <!-- log4j2的按分钟分日志文件 : %d{yyyy-MM-dd HH:mm}-%i.log-->
+                <!-- log4j2的按秒分日志文件 : %d{yyyy-MM-dd HH:mm:ss}-%i.log-->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <!-- SizeBasedTriggeringPolicy:Policies子节点， 基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小. -->
+                <SizeBasedTriggeringPolicy size="5 MB" />
+            </Policies>
+            <!--设置生成的最多文件数-->
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+    </Appenders>
+
+    <!--
+        3.定义logger 只有定义logger并引入appender，appender才生效
+    -->
+    <Loggers>
+        <!--
+            root是一股最基础的logger
+            指定日志输出的最低级别以及输出到哪些Appender
+         -->
+        <root level="debug">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="RollingFile"/>
+        </root>
+    </Loggers>
+</Configuration>

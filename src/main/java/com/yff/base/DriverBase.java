@@ -36,6 +36,7 @@ import java.util.*;
 @Slf4j
 public class DriverBase {
 
+    
     private WebDriver driver;
     private String browseName;
     private String driverBasePath;
